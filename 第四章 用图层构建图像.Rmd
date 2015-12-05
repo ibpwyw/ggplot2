@@ -1,0 +1,88 @@
+---
+title: "ggplot2 Elegant Graphics for Data Analysis"
+subtitle: "ggplot2 数据分析与图形艺术"
+author: "QinQin0912"
+date: "2015年12月5日"
+output: html_document
+---
+
+##第四章 用图层构建图像
+```{r}
+library(ggplot2)
+p<-ggplot(diamonds,aes(carat,price,colour=cut))##这个图形对象在加上图层之前无法显示,因此你现在什么也看不见
+```
+
+```{r}
+p<-p+layer(geom="point")
+```
+
+```{r}
+p<-ggplot(diamonds,aes(x=carat))##该代码可以生成一个组距为2，铁青色的直方图
+p<-p+layer(
+  geom="bar",
+  geom_params=list(fill="steelblue"),
+  stat="bin",
+  stat_params=list(binwidth=2)
+)
+p#layer(geom,geom_params,stat,stat_params,data,mapping,position)
+```
+
+
+```{r}
+ggplot(msleep,aes(sleep_rem/sleep_total,awake))+geom_point()#散点图
+##等价于
+qplot(sleep_rem/sleep_total,awake,data=msleep)
+
+##也可以给qplot增加图层
+qplot(sleep_rem/sleep_total,awake,data=msleep)+geom_smooth()#增加平滑曲线
+##等价于
+qplot(sleep_rem/sleep_total,awake,data=msleep,geom=c("point","smooth"))
+##或
+ggplot(msleep,aes(sleep_rem/sleep_total,awake))+geom_point()+geom_smooth()
+```
+
+```{r}
+library(scales)
+bestfit<-geom_smooth(method="lm",se=F,colour=alpha("steelblue",0.5),size=2)
+qplot(sleep_rem,sleep_total,data=msleep)+bestfit
+qplot(awake,brainwt,data=msleep,log="y")+bestfit
+qplot(bodywt,brainwt,data=msleep,log="xy")+bestfit
+```
+
+```{r}
+p<-ggplot(mtcars,aes(mpg,wt,colour=cyl))+geom_point()
+p
+mtcars<-transform(mtcars,mpg=mpg^2)
+p%+%mtcars #添加新的数据集以代替原来的数据集
+##在更改数据集时,可以任意改变它的值和维数,但是如果将一个变量从离散型变成连续型或者从连续型和离散型,那么也需要改变相应的默认标度。
+```
+
+```{r}
+aes(weight,height,colour=sqrt(age))#可以使用变量的函数值作为参数
+```
+
+```{r}
+p<-ggplot(mtcars,aes(x=mpg,y=wt))
+p+geom_point()
+p+geom_point(aes(colour=factor(cyl)))#修改颜色
+p+geom_point(aes(y=disp))#用disp修改y坐标
+
+#添加aes(colour=cyl)相当于aes(mpg,wt,colour=cyl)
+#修改aes(y=disp),相当于aes(mpg,disp)
+#删除aes(y=NULL),相当于aes(mpg)
+```
+
+```{r}
+p<-ggplot(mtcars,aes(mpg,wt))
+p+geom_point(colour="darkblue")
+```
+v.s.
+```{r}
+p+geom_point(aes(colour="darkblue"))
+```
+
+```{r}
+library(nlme)
+p<-ggplot(Oxboys,aes(age,height,group=Subject))+geom_line()
+p
+```
