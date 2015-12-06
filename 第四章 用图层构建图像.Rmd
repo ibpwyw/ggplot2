@@ -1,3 +1,4 @@
+
 ---
 title: "ggplot2 Elegant Graphics for Data Analysis"
 subtitle: "ggplot2 数据分析与图形艺术"
@@ -83,6 +84,64 @@ p+geom_point(aes(colour="darkblue"))
 
 ```{r}
 library(nlme)
-p<-ggplot(Oxboys,aes(age,height,group=Subject))+geom_line()
+p<-ggplot(Oxboys,aes(age,height,group=Subject))+geom_line()#多个分组与单个图形属性
 p
+```
+
+```{r}
+p+geom_smooth(aes(group=Subject),method="lm",se=F)#无意间给每一个男孩增加了一跳光滑线条
+p+geom_smooth(aes(group=1),method="lm",se=F)#属于整体数据的线条
+```
+
+```{r}
+boysbox<-ggplot(Oxboys,aes(Occasion,height))+geom_boxplot()
+boysbox+geom_line(aes(group=Subject),colour="#3366FF")
+#修改默认分组
+```
+
+```{r,echo=FALSE}
+xgrid<-with(df,seq(min(x),max(x),length=50))
+interp<-data.frame(
+  x=xgrid,
+  y=approx(df$x,df$y,xout=xgrid)$y,
+  colour=approx(df$x,df$colour,xout=xgrid)$y
+)
+qplot(x,y,data=df,colour=colour,size=I(5))+geom_line(data=interp,size=2)
+
+```
+
+```{r}
+ggplot(diamonds,aes(carat))+geom_histogram(aes(y=..density..),binwidth=0.1)
+#生成变量的名字必须用..围起来.
+qplot(carat,..density..,data=diamonds,geom="histogram",binwidth=0.1)
+```
+
+```{r}
+d<-ggplot(diamonds,aes(carat))+xlim(0,3)
+d+stat_bin(aes(ymax=..count..),binwidth = 0.1,geom="area")
+d+stat_bin(aes(size=..density..),binwidth = 0.1,geom="point",position="identity")
+d+stat_bin(aes(y=1,fill=..count..),binwidth = 0.1,geom="tile",position="identity")
+```
+
+```{r}
+require(nlme,quiet=TRUE,warn.conflicts = FALSE)
+model<-lme(height~age,data=Oxboys,random=~1+age|Subject)
+oplot<-ggplot(Oxboys,aes(age,height,group=Subject))+geom_line()
+
+age_grid<-seq(-1,1,length=10)
+subjects<-unique(Oxboys$Subject)
+preds<-expand.grid(age=age_grid,Subject=subjects)
+preds$height<-predict(model,preds)
+
+oplot+geom_line(data=preds,colour="#3366FF",size=0.4)
+
+Oxboys$fitted<-predict(model)
+Oxboys$resid<-with(Oxboys,fitted-height)
+oplot%+%Oxboys+aes(y=resid)+geom_smooth(aes(group=1))
+#残差不是随机分布
+
+model2<-update(model,height~age+I(age^2))
+Oxboys$fitted2<-predict(model2)
+Oxboys$resid2<-with(Oxboys,fitted2 - height)
+oplot%+%Oxboys+aes(y=resid2)+geom_smooth((aes(group=1)))
 ```
