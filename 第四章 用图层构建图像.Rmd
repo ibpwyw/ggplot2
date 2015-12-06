@@ -1,4 +1,3 @@
-
 ---
 title: "ggplot2 Elegant Graphics for Data Analysis"
 subtitle: "ggplot2 数据分析与图形艺术"
@@ -99,7 +98,6 @@ boysbox+geom_line(aes(group=Subject),colour="#3366FF")
 #修改默认分组
 ```
 
-```{r,echo=FALSE}
 xgrid<-with(df,seq(min(x),max(x),length=50))
 interp<-data.frame(
   x=xgrid,
@@ -108,7 +106,6 @@ interp<-data.frame(
 )
 qplot(x,y,data=df,colour=colour,size=I(5))+geom_line(data=interp,size=2)
 
-```
 
 ```{r}
 ggplot(diamonds,aes(carat))+geom_histogram(aes(y=..density..),binwidth=0.1)
@@ -145,3 +142,4 @@ Oxboys$fitted2<-predict(model2)
 Oxboys$resid2<-with(Oxboys,fitted2 - height)
 oplot%+%Oxboys+aes(y=resid2)+geom_smooth((aes(group=1)))
 ```
+
