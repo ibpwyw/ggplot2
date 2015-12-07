@@ -1,5 +1,5 @@
 ---
-  title: "第五章 工具箱"
+title: "第五章 工具箱"
 subtitle: "ggplot2 数据分析与图形艺术"
 author: "QinQin0912"
 date: "2015年12月5日"
