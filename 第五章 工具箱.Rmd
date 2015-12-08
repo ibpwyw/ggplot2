@@ -176,4 +176,73 @@ fplot%+%both1+aes(x=lcarat,colour=color)+
   geom_text(aes(label=color,x=lcarat+0.02),ends)
 ```
 
+```{r}
+midm<-function(x)mean(x,trim=0.5)
+m2+
+  stat_summary(aes(colour="trimmed"),fun.y=midm,geom="point")+
+  stat_summary(aes(colour="raw"),fun.y=mean,geom="point")+
+  scale_colour_hue("Mean")
+```
 
+```{r}
+library(Hmisc)
+iqr<-function(x,...){
+  qs<-quantile(as.numeric(x),c(0.25,0.75),na.rm=T)
+  names(qs)<-c("ymin","yma")
+  qs
+}
+  
+m+stat_summary(fun.data="iqr",geom="ribbon")
+```
+
+```{r}
+unemp<-qplot(date,unemploy,data=economics,geom="line",xlab="",ylab="No.employed(1000s)")
+
+presidential<-presidential[-(1:3),]
+yrng<-range(economics$unemploy)
+xrng<-range(economics$date)
+unemp+geom_vline(aes(xintercept=as.numeric(start)),data=presidential)
+```
+
+```{r}
+library(scales)
+unemp+geom_rect(aes(NULL,NULL,xmin=start,xmax=end,
+                    fill=party),ymin=yrng[1],ymax=yrng[2],
+                data=presidential,alpha=0.2)+scale_fill_manual(values=c("blue","red"))
+```
+
+```{r}
+last_plot()+geom_text(aes(x=start,y=yrng[1],label=name),
+                      data=presidential,size=3,hjust=0,vjust=0)
+```
+
+```{r}
+caption<-paste(strwrap("Unemployment rates in the US have varied a lot over the years",40),collapse = "\n")
+unemp+geom_text(aes(x,y,label=caption),
+                data=data.frame(x=xrng[2],y=yrng[2]),
+                hjust=1,vjust=1,size=4)
+```
+
+```{r}
+highest<-subset(economics,unemploy==max(unemploy))
+unemp+geom_point(data=highest,size=3,colour="red",alpha=0.5)
+```
+
+```{r}
+qplot(percwhite,percbelowpoverty,data=midwest)
+qplot(percwhite,percbelowpoverty,data=midwest,
+      size=poptotal/1e6)+scale_size_area("Population\n(millions)",
+      breaks=c(0.5,1,2,4))
+qplot(percwhite,percbelowpoverty,data=midwest,size=area)+scale_size_area()
+```
+
+```{r}
+lm_smooth<-geom_smooth(method=lm,size=1)
+qplot(percwhite,percbelowpoverty,data=midwest)+lm_smooth
+qplot(percwhite,percbelowpoverty,data=midwest,weight=popdensity,size=popdensity)+lm_smooth
+```
+
+```{r}
+qplot(percbelowpoverty,data=midwest,binwidth=1)
+qplot(percbelowpoverty,data=midwest,weight=poptotal,binwidth=1)+ylab("population")
+```
