@@ -1,0 +1,32 @@
+---
+title: "第七章 定位.Rmd"
+author: "QinQin0912"
+date: "2015年12月9日"
+output: html_document
+---
+```{r}
+library(ggplot2)
+mpg2<-subset(mpg,cyl!=5&drv%in%c("4","f"))
+qplot(cty,hwy,data=mpg2)+facet_null()
+qplot(cty,hwy,data=mpg2)+facet_grid(.~cyl)
+qplot(cty,data=mpg2,geom="histogram",binwidth=2)+facet_grid(cyl~.)
+qplot(cty,hwy,data=mpg2)+facet_grid(drv~cyl)
+```
+
+```{r}
+p<-qplot(displ,hwy,data=mpg2)+
+  geom_smooth(method="lm",se=F)
+p+facet_grid(cyl~drv)
+p+facet_grid(cyl~drv,margins=T)
+qplot(displ,hwy,data=mpg2)+
+  geom_smooth(aes(colour=drv),method="lm",se=F)+
+  facet_grid(cyl~drv,margins=T)
+```
+
+```{r}
+library(plyr)
+movies$decade<-round_any(movies$year,10,floor)
+qplot(rating,..density..,data=subset(movies,decade>1890),
+      geom="histogram",binwidth=0.5)+
+  facet_wrap(~decade,ncol=6)
+```
