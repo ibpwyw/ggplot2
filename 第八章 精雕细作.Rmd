@@ -1,0 +1,81 @@
+---
+title: "第八章 精雕细作"
+author: "QinQin0912"
+date: "2015年12月11日"
+output: html_document
+---
+```{r}
+hgram<-qplot(rating,data=movies,binwidth=1)
+hgram
+previous_theme<-theme_set(theme_bw())
+hgram+previous_theme
+theme_set(previous_theme)
+```
+
+```{r}
+hgramt<-hgram+labs(title="This is a histogram")
+hgramt
+hgramt+theme(plot.title=element_text(size=20))
+hgramt+theme(plot.title=element_text(size=20,colour="red"))
+hgramt+theme(plot.title=element_text(size=20,hjust=0))
+hgramt+theme(plot.title=element_text(size=20,face="bold"))
+hgramt+theme(plot.title=element_text(size=20,angle=180))
+```
+
+```{r}
+hgramt+theme(panel.grid.major=element_line(colour="red"))
+hgramt+theme(panel.grid.major=element_line(size=2))
+hgramt+theme(panel.grid.major=element_line(linetype="dotted"))
+hgramt+theme(axis.line=element_line())
+hgramt+theme(axis.line=element_line(colour="red"))
+hgramt+theme(axis.line=element_line(size=0.5,linetype="dashed"))
+```
+
+```{r}
+hgram+theme(plot.background=element_rect(fill="grey80",colour=NA))
+hgram+theme(plot.background=element_rect(size=2))
+hgram+theme(plot.background=element_rect(colour="red"))
+hgram+theme(panel.background=element_rect())
+hgram+theme(panel.background=element_rect(colour=NA))
+hgram+theme(panel.background=element_rect(linetype="dotted"))
+```
+
+```{r}
+hgramt
+last_plot()+theme(panel.grid.minor=element_blank())
+last_plot()+theme(panel.grid.major=element_blank())
+last_plot()+theme(panel.background=element_blank())
+last_plot()+theme(axis.title.x=element_blank(),
+                  axis.title.y=element_blank())
+last_plot()+theme(axis.line=element_line())
+```
+
+```{r}
+old_theme<-theme_update(
+  plot.background=element_rect(fill="#3366FF"),
+  panel.background=element_rect(fill="#003DF5"),
+  axis.text.x=element_text(colour="#CCFF33"),
+  axis.text.y=element_text(colour="#CCFF33",hjust=1),
+  axis.title.x=element_text(colour="#CCF33",face="bold"),
+  axis.title.y=element_text(colour="#CCF33",face="bold",
+  angle=90)
+)
+
+qplot(cut,data=diamonds,geom="bar")
+qplot(cty,hwy,data=mpg)
+theme_set(old_theme)
+```
+
+```{r}
+p<-qplot(mpg,wt,data=mtcars,colour=factor(cyl))
+p
+scale_colour_discrete<-scale_colour_brewer
+p
+```
+
+```{r}
+update_geom_defaults("point",aes(colour="darkblue"))
+qplot(mpg,wt,data=mtcars)
+update_stat_defaults("bin",aes(y=..density..))
+qplot(rating,data=movies,geom="histogram",binwidth=1)
+```
